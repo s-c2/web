@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fullscreen Grid</title>
+    <style>
+        body, html {
+			background-color: rgb(64,64,64);
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+        .line {
+            position: absolute;
+            background-color: red; /* Default color */
+        }
+        .vertical {
+            width: 2px;
+            height: 100%;
+        }
+        .horizontal {
+            height: 2px;
+            width: 100%;
+        }
+        /* Vertical lines */
+        .v0 { left: 0%; background-color: white; }
+        .v5 { left: 5%; background-color: white; }
+        .v10 { left: 10%; background-color: white; }
+        .v25 { left: calc(25% - 1px); background-color: white; }
+        .v50 { left: calc(50% - 1px); background-color: white; }
+        .v75 { left: calc(75% - 1px); background-color: white; }
+        .v90 { left: calc(90% - 2px); background-color: white; }
+        .v95 { left: calc(95% - 2px); background-color: white; }
+        .v100 { left: calc(100% - 2px); background-color: white; }
+        /* Horizontal lines */
+        .h0 { top: 0%; background-color: white; }
+        .h5 { top: 5%; background-color: white; }
+        .h10 { top: 10%; background-color: white; }
+        .h25 { top: calc(25% - 1px); background-color: white; }
+        .h50 { top: calc(50% - 1px); background-color: white; }
+        .h75 { top: calc(75% - 1px); background-color: white; }
+        .h90 { top: calc(90% - 2px); background-color: white; }
+        .h95 { top: calc(95% - 2px); background-color: white; }
+        .h100 { top: calc(100% - 2px); background-color: white; }
+		/* Image styles */
+        .image {
+            position: absolute;
+            width: 64px;
+            height: 64px;
+        }
+        .top-left {
+            top: 10%;
+            left: 10%;
+        }
+        .top-right {
+            top: 10%;
+            right: 10%;
+        }
+        .bottom-left {
+            bottom: 10%;
+            left: 10%;
+        }
+        .bottom-right {
+            bottom: 10%;
+            right: 10%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Vertical lines -->
+    <div class="line vertical v0"></div>
+    <div class="line vertical v5"></div>
+    <div class="line vertical v10"></div>
+    <div class="line vertical v25"></div>
+    <div class="line vertical v50"></div>
+    <div class="line vertical v75"></div>
+    <div class="line vertical v90"></div>
+    <div class="line vertical v95"></div>
+    <div class="line vertical v100"></div>
+    <!-- Horizontal lines -->
+    <div class="line horizontal h0"></div>
+    <div class="line horizontal h5"></div>
+    <div class="line horizontal h10"></div>
+    <div class="line horizontal h25"></div>
+    <div class="line horizontal h50"></div>
+    <div class="line horizontal h75"></div>
+    <div class="line horizontal h90"></div>
+    <div class="line horizontal h95"></div>
+    <div class="line horizontal h100"></div>
+	<!-- Images -->
+	<img src="top-left.png" alt="Top Left" class="image top-left">
+    <img src="top-right.png" alt="Top Right" class="image top-right">
+    <img src="bottom-left.png" alt="Bottom Left" class="image bottom-left">
+    <img src="bottom-right.png" alt="Bottom Right" class="image bottom-right">
+</body>
+</html>

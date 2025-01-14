@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fullscreen Grid</title>
+    <style>
+        body, html {
+			background-color: rgb(255,255,255);
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+        .line {
+            position: absolute;
+            background-color: red; /* Default color */
+        }
+        .vertical {
+            width: 2px;
+            height: 100%;
+        }
+        .horizontal {
+            height: 2px;
+            width: 100%;
+        }
+        /* Vertical lines */
+        .v0 { left: 0%; background-color: black; }
+        .v5 { left: 5%; background-color: black; }
+        .v10 { left: 10%; background-color: black; }
+        .v25 { left: calc(25% - 1px); background-color: black; }
+        .v50 { left: calc(50% - 1px); background-color: black; }
+        .v75 { left: calc(75% - 1px); background-color: black; }
+        .v90 { left: calc(90% - 2px); background-color: black; }
+        .v95 { left: calc(95% - 2px); background-color: black; }
+        .v100 { left: calc(100% - 2px); background-color: black; }
+        /* Horizontal lines */
+        .h0 { top: 0%; background-color: black; }
+        .h5 { top: 5%; background-color: black; }
+        .h10 { top: 10%; background-color: black; }
+        .h25 { top: calc(25% - 1px); background-color: black; }
+        .h50 { top: calc(50% - 1px); background-color: black; }
+        .h75 { top: calc(75% - 1px); background-color: black; }
+        .h90 { top: calc(90% - 2px); background-color: black; }
+        .h95 { top: calc(95% - 2px); background-color: black; }
+        .h100 { top: calc(100% - 2px); background-color: black; }
+		 /* Canvas styles */
+        canvas {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+			width: 400px;
+			height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Vertical lines -->
+    <div class="line vertical v0"></div>
+    <div class="line vertical v5"></div>
+    <div class="line vertical v10"></div>
+    <div class="line vertical v25"></div>
+    <div class="line vertical v50"></div>
+    <div class="line vertical v75"></div>
+    <div class="line vertical v90"></div>
+    <div class="line vertical v95"></div>
+    <div class="line vertical v100"></div>
+    <!-- Horizontal lines -->
+    <div class="line horizontal h0"></div>
+    <div class="line horizontal h5"></div>
+    <div class="line horizontal h10"></div>
+    <div class="line horizontal h25"></div>
+    <div class="line horizontal h50"></div>
+    <div class="line horizontal h75"></div>
+    <div class="line horizontal h90"></div>
+    <div class="line horizontal h95"></div>
+    <div class="line horizontal h100"></div>
+	<!-- Canvas -->
+    <canvas id="canvas"></canvas>
+</body>
+<script>
+        let startTime, endTime;
+        const measurements = [];
+
+        function getCoordinates(event) {
+            const x = event.clientX || event.touches[0].clientX;
+            const y = event.clientY || event.touches[0].clientY;
+            return { x, y };
+        }
+
+        function handleStart(event) {
+            startTime = new Date().getTime();
+            const { x, y } = getCoordinates(event);
+            console.log(`Start: X=${x}, Y=${y}`);
+        }
+
+        function handleEnd(event) {
+            endTime = new Date().getTime();
+            const duration = endTime - startTime;
+            const { x, y } = getCoordinates(event);
+            console.log(`End: X=${x}, Y=${y}, Duration=${duration}ms`);
+            measurements.push({ x, y, duration });
+            if (measurements.length > 4) {
+                measurements.shift();
+            }
+            drawMeasurements();
+        }
+
+        function drawMeasurements() {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.font = '16px Arial';
+            ctx.fillStyle = 'black';
+            measurements.forEach((measurement, index) => {
+                const text = `x/y [px]: ${measurement.x.toString().padStart(4, '0')}/${measurement.y.toString().padStart(4, '0')} dur [ms]: ${measurement.duration.toString().padStart(5, '0')}`;
+                ctx.fillText(text, 10, 20 + index * 20);
+            });
+        }
+
+        document.addEventListener('mousedown', handleStart);
+        document.addEventListener('mouseup', handleEnd);
+        document.addEventListener('touchstart', handleStart);
+        document.addEventListener('touchend', handleEnd);
+    </script>
+
+</html>

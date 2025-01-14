@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fullscreen Grid</title>
+    <style>
+        body, html {
+            background-color: rgb(255,255,255);
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+        .line {
+            position: absolute;
+            background-color: red; /* Default color */
+        }
+        .vertical {
+            width: 1px;
+            height: 100%;
+        }
+        .horizontal {
+            height: 1px;
+            width: 100%;
+        }
+        /* Vertical lines */
+        .v0 { left: 0%; background-color: black; }
+        .v5 { left: 5%; background-color: black; }
+        .v10 { left: 10%; background-color: black; }
+        .v25 { left: 25%; background-color: black; }
+        .v50 { left: calc(50% - 0.5px); background-color: black; }
+        .v75 { left: calc(75% - 1px); background-color: black; }
+        .v90 { left: calc(90% - 1px); background-color: black; }
+        .v95 { left: calc(95% - 1px); background-color: black; }
+        .v100 { left: calc(100% - 1px); background-color: black; }
+        /* Horizontal lines */
+        .h0 { top: 0%; background-color: black; }
+        .h5 { top: 5%; background-color: black; }
+        .h10 { top: 10%; background-color: black; }
+        .h25 { top: 25%; background-color: black; }
+        .h50 { top: calc(50% - 0.5px); background-color: black; }
+        .h75 { top: calc(75% - 1px); background-color: black; }
+        .h90 { top: calc(90% - 1px); background-color: black; }
+        .h95 { top: calc(95% - 1px); background-color: black; }
+        .h100 { top: calc(100% - 1px); background-color: black; }
+        /* Button styles */
+        .log-button {
+            position: absolute;
+            top: 37.5%;
+            left: 62.5%;
+            transform: translate(-50%, -50%);
+            padding: 10px 20px;
+            background-color: black;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        /* Log container styles */
+        .log-container {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border: 1px solid black;
+            padding: 10px;
+            width: 600px; /* Increased width */
+            height: 300px;
+            overflow-y: auto;
+        }
+        .log-container .close-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        pre {
+            font-family: monospace;
+            white-space: pre-wrap; /* Preserve whitespace */
+        }
+    </style>
+</head>
+<body>
+    <!-- Vertical lines -->
+    <div class="line vertical v0"></div>
+    <div class="line vertical v5"></div>
+    <div class="line vertical v10"></div>
+    <div class="line vertical v25"></div>
+    <div class="line vertical v50"></div>
+    <div class="line vertical v75"></div>
+    <div class="line vertical v90"></div>
+    <div class="line vertical v95"></div>
+    <div class="line vertical v100"></div>
+    <!-- Horizontal lines -->
+    <div class="line horizontal h0"></div>
+    <div class="line horizontal h5"></div>
+    <div class="line horizontal h10"></div>
+    <div class="line horizontal h25"></div>
+    <div class="line horizontal h50"></div>
+    <div class="line horizontal h75"></div>
+    <div class="line horizontal h90"></div>
+    <div class="line horizontal h95"></div>
+    <div class="line horizontal h100"></div>
+    <!-- Log Button -->
+    <button class="log-button" onclick="showLog()">Show Log</button>
+    <!-- Log Container -->
+    <div class="log-container" id="logContainer">
+        <span class="close-button" onclick="hideLog()">X</span>
+        <pre id="logText"></pre>
+    </div>
+</body>
+<script>
+    let startTime, endTime;
+    const measurements = [];
+    const distMeasurement = 10;
+
+    function getCoordinates(event) {
+        const x = event.clientX || event.touches[0].clientX;
+        const y = event.clientY || event.touches[0].clientY;
+        return { x, y };
+    }
+
+    function getPosition(x, y) {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        if (x >= 0 && x <= distMeasurement/100*width && y >= 0 && y <= distMeasurement/100*height) {
+            return 'TL';
+        } else if (x >= width - distMeasurement/100*width && x <= width && y >= 0 && y <= distMeasurement/100*height) {
+            return 'TR';
+        } else if (x >= 0 && x <= distMeasurement/100*width && y >= height - distMeasurement/100*height && y <= height) {
+            return 'BL';
+        } else if (x >= width - distMeasurement/100*width && x <= width && y >= height - distMeasurement/100*height && y <= height) {
+            return 'BR';
+        } else {
+            return '';
+        }
+    }
+
+    function handleStart(event) {
+        startTime = new Date().getTime();
+        const { x, y } = getCoordinates(event);
+        const pos = getPosition(x, y);
+        measurements.push({ pos, xStart: x, yStart: y, xEnd: null, yEnd: null, duration: null });
+    }
+
+    function handleEnd(event) {
+        endTime = new Date().getTime();
+        const duration = endTime - startTime;
+        const { x, y } = getCoordinates(event);
+        const lastMeasurement = measurements[measurements.length - 1];
+        lastMeasurement.xEnd = x;
+        lastMeasurement.yEnd = y;
+        lastMeasurement.duration = duration;
+        if (measurements.length > 30) {
+            measurements.shift();
+        }
+        updateLog();
+    }
+
+    function updateLog() {
+        const logText = document.getElementById('logText');
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+        const screenInfo = `SCREEN WIDTH: ${screenWidth} px HEIGHT: ${screenHeight} px`;
+        const headings = `"pos", "xStart [px]", "yStart [px]", "xEnd [px]", "yEnd [px]", "dur [ms]"`;
+        const logEntries = measurements.map(measurement => 
+            `   ${measurement.pos.padEnd(2, ' ')},          ${measurement.xStart.toString().padStart(4, '0')},          ${measurement.yStart.toString().padStart(4, '0')},        ${measurement.xEnd.toString().padStart(4, '0')},        ${measurement.yEnd.toString().padStart(4, '0')},       ${measurement.duration.toString().padStart(5, '0')}`
+        ).join('\n');
+        logText.textContent = `${screenInfo}\n${headings}\n${logEntries}`;
+    }
+
+    function showLog() {
+        document.getElementById('logContainer').style.display = 'block';
+    }
+
+    function hideLog() {
+        document.getElementById('logContainer').style.display = 'none';
+    }
+
+    document.addEventListener('mousedown', handleStart);
+    document.addEventListener('mouseup', handleEnd);
+    document.addEventListener('touchstart', handleStart);
+    document.addEventListener('touchend', handleEnd);
+</script>
+</html>
