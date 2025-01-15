@@ -145,6 +145,7 @@
         const { x, y } = getCoordinates(event);
         const pos = getPosition(x, y);
         measurements.push({ pos, xStart: x, yStart: y, xEnd: null, yEnd: null, duration: null });
+        event.preventDefault();
     }
 
     function handleEnd(event) {
@@ -159,6 +160,7 @@
             measurements.shift();
         }
         updateLog();
+        event.preventDefault();
     }
 
     function updateLog() {
