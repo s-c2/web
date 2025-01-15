@@ -119,8 +119,8 @@
     const distMeasurement = 10;
 
     function getCoordinates(event) {
-        const x = event.clientX || event.touches[0].clientX;
-        const y = event.clientY || event.touches[0].clientY;
+        const x = event.clientX || (event.touches[0].clientX);
+        const y = event.clientY || (event.touches[0].clientY);
         return { x, y };
     }
 
@@ -183,7 +183,7 @@
 
     document.addEventListener('mousedown', handleStart);
     document.addEventListener('mouseup', handleEnd);
-    document.addEventListener('touchstart', handleStart);
-    document.addEventListener('touchend', handleEnd);
+    document.addEventListener('touchstart', handleStart, { passive: false});
+    document.addEventListener('touchend', handleEnd, { passive: false});
 </script>
 </html>
